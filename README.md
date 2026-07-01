@@ -2,6 +2,14 @@
 
 This project tracks user activity, stores events in a database, generates embeddings, and enables semantic search over user behavior data.
 
+## Live Deployment
+
+Frontend Live:
+https://backend-assignment-ebon.vercel.app
+
+Backend API Live:
+https://backend-assignment-6t4n.onrender.com
+
 
 ## Project Objective
 
@@ -17,8 +25,8 @@ The goal of this project is to track user behavioral events (e.g., page views, b
 - **PostgreSQL**: Relational database to persist users, events, and vector indices mappings.
 - **SQLAlchemy**: Object-Relational Mapper (ORM) with asyncpg driver.
 
-**AI Layer:**
-- **SentenceTransformers** (`all-MiniLM-L6-v2`): Generates 384-dimensional vector embeddings of text.
+**Vector Search Layer:**
+- **Lightweight Embedding Generator**: Generates deterministic 384-dimensional embeddings for semantic similarity simulation.
 - **FAISS**: Performs vector similarity search.
 
 **Frontend:**
@@ -28,6 +36,8 @@ The goal of this project is to track user behavioral events (e.g., page views, b
 
 **Deployment:**
 - **Docker & Docker Compose**: Optional local container orchestration.
+- **Render**: Backend deployment
+- **Vercel**: Frontend deployment
 
 ---
 
@@ -146,7 +156,6 @@ Create a PostgreSQL database locally and configure credentials in backend/.env.
    ```env
    DATABASE_URL=postgresql+asyncpg://postgres:password@localhost:5432/insightflow
    FAISS_INDEX_PATH=data/faiss_index.bin
-   EMBEDDING_MODEL_NAME=all-MiniLM-L6-v2
    ENVIRONMENT=development
    CORS_ORIGINS=http://localhost:5173,http://localhost
    ```
@@ -191,5 +200,5 @@ docker compose exec backend python app/utils/seeder.py
 
 - **Why PostgreSQL**: PostgreSQL stores user and event data in structured tables and handles JSONB columns easily, allowing us to store arbitrary event metadata structures without a rigid schema.
 - **Why FAISS**: FAISS helps quickly compare stored vector embeddings. Rather than relying on slow database loops or overhead-heavy plugins, it computes searches very fast.
-- **Why Embeddings for Semantic Search**: Relying solely on keyword searches fails when users describe similar actions with different words (e.g., "pricing plan" vs "billing page"). Generating embeddings helps find similar user actions even when exact words differ.
+- **Why Lightweight Embeddings**: A deterministic lightweight embedding generator is used to simulate semantic similarity behavior while keeping deployment memory usage low and preserving vector search functionality.
 - **Why Async Background Tasks**: Generating text embeddings and updating FAISS indices can introduce latency. Offloading these tasks to FastAPI background workers allows the application to ingest events immediately with a `202 Accepted` response while keeping API response times fast and consistent.
