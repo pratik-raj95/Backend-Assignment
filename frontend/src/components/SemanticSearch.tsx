@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { api, SearchResultItem } from '../utils/api'
-import { Search, Slider, SlidersHorizontal, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react'
+import { Search, SlidersHorizontal, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react'
 
 export const SemanticSearch: React.FC = () => {
   const [query, setQuery] = useState('')
