@@ -15,6 +15,8 @@ if settings.DATABASE_URL.startswith("sqlite"):
 else:
     engine_kwargs["pool_size"] = 10
     engine_kwargs["max_overflow"] = 20
+    if "neon.tech" in settings.DATABASE_URL:
+        connect_args["ssl"] = "require"
 
 engine = create_async_engine(
     settings.DATABASE_URL,
