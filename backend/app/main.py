@@ -81,8 +81,8 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title=settings.PROJECT_NAME,
     lifespan=lifespan,
-    docs_url="/docs" if settings.ENVIRONMENT == "development" else None,
-    redoc_url="/redoc" if settings.ENVIRONMENT == "development" else None
+    docs_url="/docs",
+    redoc_url="/redoc"
 )
 
 # Wire rate limiting state and handler
@@ -122,5 +122,5 @@ async def root():
         "app": settings.PROJECT_NAME,
         "version": "1.0.0",
         "status": "online",
-        "documentation": "/docs" if settings.ENVIRONMENT == "development" else "hidden"
+        "documentation": "/docs"
     }
