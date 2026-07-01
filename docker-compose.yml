@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  # Database Service
+  db:
+    image: postgres:15-alpine
+    container_name: insightflow_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: insightflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d insightflow"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - insightflow_net
+
+  # FastAPI Backend Application
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: insightflow_backend
+    environment:
+      POSTGRES_SERVER: db
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: insightflow
+      FAISS_INDEX_PATH: data/faiss_index.bin
+      EMBEDDING_MODEL_NAME: all-MiniLM-L6-v2
+      CORS_ORIGINS: "http://localhost,http://localhost:5173"
+      ENVIRONMENT: production
+    ports:
+      - "8000:8000"
+    volumes:
+      - faiss_data:/app/data
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - insightflow_net
+
+  # React Frontend Dashboard
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: insightflow_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - insightflow_net
+
+volumes:
+  postgres_data:
+  faiss_data:
+
+networks:
+  insightflow_net:
+    driver: bridge
