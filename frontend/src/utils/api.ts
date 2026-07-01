@@ -1,9 +1,10 @@
 import axios from 'axios'
 
-// Load API Base URL from Vite environment variables, fallback to local standard port
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
-const API_PREFIX = '/api/v1'
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL ||
+  'https://backend-assignment-6t4n.onrender.com'
 
+const API_PREFIX = '/api/v1'
 const apiClient = axios.create({
   baseURL: `${API_BASE_URL}${API_PREFIX}`,
   headers: {
